@@ -46,15 +46,42 @@
 				<h1 class="major">Pandas for Text Manipulation</h1>
 				<p>
 					A simple case of data manipulation in Pandas can involve text or value manipulation. For instance,
-					if we
-					have a dataset with columns like Name/Last_Name (alphabetic), we should filter out unusual
-					characters.
-					The same applies to columns like telephone number or salary, where we need to standardize the
-					values.
+					if we have a dataset with columns like Name/Last_Name (alphabetic), we should filter out unusual
+					characters. The same applies to columns like telephone numbers or salaries, where we need to
+					standardize the values.
 				</p>
 				<div class="col-12"><span class="image fit"><img src="images/Pandas_Text.png"
 							alt="different data distributions " />
 				</div>
+				<p>
+					The picture above provides a simple example of how data could appear.</br>
+					For example, if we observe unusual characters in the "Last_Name" column, we need to filter the
+					values in that column and remove everything except alphabetic characters.
+				<pre><code>df['Last_Name']=df['Last_Name'].str.strip() # delete whitespace 
+df['Last_Name']=df['Last_Name'].str.replace('[^a-zA-Z]','',regex=True) # delete everything out of range a-z
+df['Last_Name'].fillna('',inplace=True)# replace NaN with empty string</code></pre>
+				</p>
+				<p>
+					he same principle applies to the Phone_Number column. We need to remove everything except numeric
+					values and format the values in a predefined manner.</br>
+					In the case of address column maybe we don't need to formate the values , but we can break down the
+					addresses and create new columns, which maybe more usefull for demontration or trainingsporpuses.
+				<pre><code>df['Address']=df['Address'].astype(str) # convert to string
+df['Address']=df['Address'].str.replace('N/a','') # replace N/a fields with empty string 
+df[['Address_new','City_new','Zipcode_new']]=df['Address'].str.split(',',expand=True) # create new columns from Address</code></pre>
+				</p>
+				<p>
+					For the remaining columns, we can perform simple formatting tasks such as replacing 'N' with 'No' or
+					'Y' with 'Yes', and replacing 'NaN' (missing values) with an empty string.
+				<pre><code>df['Paying Customer']=df['Paying Customer'].str.replace('N/a','') # replace N/a 
+df['Paying Customer']=df['Paying Customer'].apply(lambda answer:'No' if len(answer)== 1 and answer=='N' else answer )
+df['Paying Customer']=df['Paying Customer'].apply(lambda answer:'Yes' if len(answer)== 1 and answer=='Y' else answer )</code></pre>
+				This could indeed be a simple and beginner-friendly approach to manipulate values in Pandas for
+				formatting and standardizing datasets!
+				</p>
+				<ul class="actions">
+					<li><a href="https://github.com/ahmCoding/DataUnderstanding/blob/main/PandasDataCleaning.ipynb"
+							class="button primary ">Code</a></li>
 		</section>
 	</div>
 
