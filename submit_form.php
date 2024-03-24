@@ -1,21 +1,26 @@
+
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $message = $_POST['message'];
-
-    // Send email (example)
-    $to = "ahmcoding021@gmail.com";
-    $subject = "Message from Contact Form";
-    $email_body = "Name: $name\nEmail: $email\nMessage:\n$message";
-    
-    // Send the email
-    mail($to, $subject, $email_body);
-
-    // Redirect to a thank you page
-    header("Location: generic.html");
-    exit();
+// Get data from form  
+$name = $_POST['name'];
+$email= $_POST['email'];
+$message= $_POST['message'];
+ 
+$to = "ahmcoding@gmail.com";
+$subject = "This is the subject line";
+ 
+// The following text will be sent
+// Name = user entered name
+// Email = user entered email
+// Message = user entered message 
+$txt ="Name = ". $name . "\r\n  Email = "
+    . $email . "\r\n Message =" . $message;
+ 
+if($email != NULL) {
+    mail($to, $subject, $txt);
 }
+ 
+// Redirect to
+header("Location:generic.html");
 ?>
+
 
