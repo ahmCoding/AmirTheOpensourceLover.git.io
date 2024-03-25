@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	<title>Covid Numbers around the world</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
+</head>
+
+<body class="is-preload">
+
+	<!-- Header -->
+	<header id="header">
+		<a href="index.html" class="title">Back</a>
+		<nav>
+			<ul>
+				<li><a href="index.html">Home</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Main -->
+		<section id="main" class="wrapper">
+			<div class="inner">
+				<h2 class="major">highlight important statistics using SQL and Tableau</h1>
+					<h3>The first step is to find some valuable and trustworthy data.</h3>
+					<p>A good place to look for valuable data ist <a href="https://ourworldindata.org/"
+							target="_blank">OurWordInData. </a>
+						I chose to use the current version of COVID-19 Dataset downloaded from <a
+							href="https://github.com/owid/covid-19-data/tree/master/public/data" target="_blank"><b>
+								here</b></a>.</br>
+						The dataset has many columns (67), and after some exploration, I'm going to use 12 of them and
+						must
+						of them:</p>
+					<div class="row">
+						<div class="col-6 col-12-medium">
+							<ul>
+								<li>continent </li>
+								<li>location </li>
+								<li>date </li>
+								<li>population</li>
+								<li>new_cases</li>
+								<li>new_deaths</li>
+								<li>new_vaccinations</li>
+								<li> extreme_poverty: <i>Share of the population living in extreme poverty</i></li>
+								<li> male_smokers</li>
+								<li> female_smokers</li>
+								<li> population_density:<i> measured in square kilometers </i></li>
+								<li> human_development_index:<a
+										href="https://hdr.undp.org/data-center/country-insights#/ranks" target="_blank">
+										<i>score</a> from 1 to 100 </i></li>
+							</ul>
+							</li>
+							</ul>
+						</div>
+					</div>
+					<p>There are some rows in the dataset that do not pertain to a specific country; instead, they
+						contain information about continents and income levels of people. We need to be aware of these
+						rows.
+						<span class="image fit"><img src="images/covid/rows_1.png" alt="" /></span>
+						My first step is to create a temporary table and put all the needed information for further
+						calculations in it.
+					<pre><code>-- create temp table 
+CREATE TABLE #CountryInfos(
+	continent VARCHAR(50),
+	location VARCHAR(50),
+	date Date,
+	population FLOAT,
+	new_cases FLOAT,
+	new_deaths FLOAT,
+	new_vaccinations FLOAT,
+	extreme_poverty FLOAT,
+	male_smokers FLOAT,
+	female_smokers FLOAT,
+	population_density FLOAT,
+	human_development_index FLOAT,
+);
+</code></pre>
+					The placeholder is now ready, and the next step is putting the information in it using a Common
+					Table Expression (CTE) and the INSERT command.
+					<pre><code>With tst as (
+	select continent,location,date,population,new_cases,new_deaths,new_vaccinations,
+	extreme_poverty,male_smokers,female_smokers
+	,population_density,human_development_index
+	from Covid..CovidData
+	WHERE continent is not null and location not like('%income%')
+	)
+	INSERT into #CountryInfos(continent,location,date,population,new_cases,new_deaths,new_vaccinations,
+	extreme_poverty,male_smokers,female_smokers
+	,population_density,human_development_index)
+	select * from tst;</code></pre>
+					</p>
+					<p>Now we are good to go for calculations and create useful information for presentation in Excel or
+						Tableau</p>
+
+			</div>
+		</section>
+
+	</div>
+
+	<!-- Footer -->
+	<footer id="footer" class="wrapper alt">
+		<div class="inner">
+			<ul class="menu">
+				<li>&copy; Untitled. All rights reserved.</li>
+				<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+			</ul>
+		</div>
+	</footer>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
