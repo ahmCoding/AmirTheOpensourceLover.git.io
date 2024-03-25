@@ -130,7 +130,23 @@ CREATE TABLE #CountryInfos(
 	where  Infected_Percentage_of_Population <> 0 and Died_Percentage_of_Infected <>0 
 	order by Count_of_Died_People desc</code></pre>
 					</p>
-
+					<p>
+						In the next part, we are going to calculate similar numbers as above, but on a daily basis.
+					<pre><code>--day by day calcultions 
+	select location, date ,
+	sum(new_cases) OVER(partition by location order by date) as sum_of_infected_people,
+	sum(new_deaths) OVER(partition by location order by date) as sum_of_died_people,
+	convert(DECIMAL(8,2),((sum(new_deaths)OVER(partition by location order by date))/
+	Nullif(sum(new_cases)OVER(partition by location order by date),0)* 100))
+	as deadly_percentage_of_infection,
+	convert(DECIMAL(8,2),((sum(new_vaccinations)OVER(partition by location order by date))/
+	Nullif(Max(population)OVER(partition by location order by date),0)* 100))
+	as vaccinated_percentage_of_population,
+	human_development_index,extreme_poverty,male_smokers,female_smokers,population_density
+	from #CountryInfos
+	where new_deaths<> 0 or  new_cases<> 0 or  new_vaccinations<> 0 
+	ORDER by location,date</code></pre>
+					</p>
 			</div>
 		</section>
 
