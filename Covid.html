@@ -119,16 +119,18 @@ CREATE TABLE #CountryInfos(
 						from 05.01.2020 up to the current date of writing this statistic (25.03.2024) .
 					<pre><code>--cumulative numbers
 	WITH cum_calc as(
-	select location ,human_development_index,extreme_poverty,male_smokers,female_smokers,population_density,
-		convert(DECIMAL(4,2), (sum(new_cases) / NULLIF(max(population),0) * 100)) as Infected_Percentage_of_Population ,
+	select continent,location,population,human_development_index,extreme_poverty,male_smokers,female_smokers,population_density,
+		convert(DECIMAL(4,2), (sum(new_cases) / NULLIF(max(population),0) * 100)) as Infected_Percentage_of_Population,
 		convert(DECIMAL(4,2), (sum(new_deaths)/ NULLIF(sum(new_cases),0) * 100)) as Died_Percentage_of_Infected,
-		sum(new_deaths) as Count_of_Died_People 
+		sum(new_deaths) as count_of_deaths, 
+		sum(new_cases) as count_of_infectetion,
+	convert(decimal(5,2),(sum(new_deaths) /  sum(new_cases) - 1.0 ) * -100) as recovered_percentage
 	from #CountryInfos
-	GROUP BY location,human_development_index,extreme_poverty,male_smokers,female_smokers,population_density
+	GROUP BY continent,location,population,human_development_index,extreme_poverty,male_smokers,female_smokers,population_density
 	)
 	select * from cum_calc
-	where  Infected_Percentage_of_Population <> 0 and Died_Percentage_of_Infected <>0 
-	order by Count_of_Died_People desc</code></pre>
+	where  Infected_Percentage_of_Population <> 0 and Died_Percentage_of_Infected <> 0 
+	order by count_of_deaths desc</code></pre>
 					</p>
 					<p>
 						In the next part, we are going to calculate similar numbers as above, but on a daily basis.
